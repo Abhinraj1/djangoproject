@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="auth_bg"></div>
+<div id="sign_up_container">
+    <div class ="auth_form">
+<h2>Verify OTP</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="auth_button" type="submit">Verify OTP</button>
+    </form>
+</div>
+</div>
+{% endblock %}

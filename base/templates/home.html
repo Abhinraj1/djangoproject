@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div id="home_bg"></div>
+<div id="home_container">
+    <div class="task_list" id="task_list">
+        <h3>All Tasks:</h3>
+        {% for task in tasks %}
+        <div class="tasks_div">
+            <div class="task_header">{{ task.title }}</div>
+            <div class="task_body">
+                <span class="task_description">{{ task.description }}</span>
+                {% if not task.is_done %}
+                <button class="task_button" style="width: 150px;" onclick="location.href='{% url 'mark_task_done' task.id %}'">Mark as Done</button>
+                {% else %}
+                <button class="task_button" style="width: 150px;" onclick="location.href='{% url 'mark_task_undone' task.id %}'">Mark as Undone</button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div id="calendar_container">
+        <div id="calendar"></div>
+    </div>
+    <form method="POST" action="{% url 'add_task' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Task</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<!-- FullCalendar CSS -->
+<link rel="stylesheet" href="{% static 'fullcalendar/main.css' %}" />
+
+<!-- FullCalendar and Moment.js Scripts -->
+<script src="{% static 'moment/moment.min.js' %}"></script>
+<script src="{% static 'fullcalendar/main.js' %}"></script>
+
+<!-- FullCalendar Initialization -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM content loaded, initializing calendar...");
+
+    const tasks = [
+        {% for task in tasks %}
+        {
+            title: '{{ task.title }}',
+            start: '{{ task.created_at|date:"Y-m-d\\TH:i:s" }}',
+            url: '{% url "mark_task_done" task.id %}',
+            extendedProps: {
+                description: '{{ task.description }}',
+                isDone: '{{ task.is_done }}'
+            }
+        },
+        {% endfor %}
+    ];
+
+    console.log("Tasks: ", tasks);
+
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: tasks,
+        eventClick: function(info) {
+            info.jsEvent.preventDefault();
+            const date = info.event.startStr.split('T')[0];
+            const tasksForDate = tasks.filter((task) => task.start.split('T')[0] === date);
+            console.log("Tasks for date: ", tasksForDate);
+            tasksForDate.forEach((task) => {
+                taskListHtml += '<div class="tasks_div">';
+                taskListHtml += '<div class="task_header">' + task.title + '</div>';
+                taskListHtml += '<div class="task_body">';
+                taskListHtml += '<span class="task_description">' + task.extendedProps.description + '</span>';
+                if (task.extendedProps.isDone === 'False') {
+                    taskListHtml += '<button class="task_button" style="width: 150px;" onclick="location.href=\'' + task.url + '\'">Mark as Done</button>';
+                } else {
+                    taskListHtml += '<button class="task_button" style="width: 150px;" onclick="location.href=\'' + task.url.replace('mark_task_done', 'mark_task_undone') + '\'">Mark as Undone</button>';
+                }
+                taskListHtml += '</div></div>';
+            });
+            document.getElementById('task_list').innerHTML = taskListHtml;
+        }
+    });
+    calendar.render();
+});
+</script>
+{% endblock content %}
