@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+<!--HOME PAGE WHERE WE ADD TASKS-->
 <div id="home_bg"></div>
 <div id="home_container">
     <div class="task_list" id="task_list">
@@ -58,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     console.log("Tasks: ", tasks);
-
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
