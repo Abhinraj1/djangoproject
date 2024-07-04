@@ -90,7 +90,7 @@ DATABASES = {
         'ENGINE': "django.db.backends.postgresql",
         'NAME': "tasks_db",
         "USER":"abhi",
-        "PASSWORD":"8DPASSWB",
+        "PASSWORD":"",
         "HOST":"database-1.crii0g2kqbe8.ap-southeast-2.rds.amazonaws.com",
         "PORT":"5432"
     }
@@ -155,7 +155,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'abhinethra.app.dev@gmail.com'
-EMAIL_HOST_PASSWORD = 'lsns fwak loaz ingv'
+EMAIL_HOST_PASSWORD = ''
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = env('EMAIL_HOST')
